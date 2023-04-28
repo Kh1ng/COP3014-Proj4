@@ -4,25 +4,20 @@
 #include <string>
 
 class Grade {
+private:
   std::string studentName;
   double grade;
- public:
-  // default constructor
+
+public:
   Grade();
-  // parameterized constructor to set the initial values of
-  //   all instance variables
-  Grade(const std::string &name, double grade);
-  // getter of the student's name
+
+  Grade(const std::string &infoLine);
+
   std::string getName() const;
-  // getter of the grade
+
   double getGrade() const;
-  // print the grade info in the format like:
-  //   Name: Jerry Williams | Grade: 78.0
-  // should display one decimal place
 
-  void setGrade(double grade);
-
-  void print() const;
+  std::string infoLine() const;
 };
 
 #endif // GRADE_HPP
