@@ -1,108 +1,83 @@
 #include "gradebook.hpp"
-#include <string>
+#include "grade.hpp"
+#include <fstream>
 #include <iostream>
+#include <string>
 
-GradeBook::GradeBook()
-{
-  courseName = "NOT_SET";
+GradeBook::GradeBook() {
+  courseName = "Unnamed";
   grades = new Grade[40];
-  count = 0;
+  this->count = 0;
+  path = "gradebook.txt";
+  capacity = 40;
+  if (path != "") {
+    loadFile();
+  }
 }
 
-GradeBook::GradeBook(const std::string &courseName, int size)
-{
-  this->courseName = courseName;
+GradeBook::GradeBook(const std::string &courseName, int capacity,
+                     const std::string &path) {
+  this->courseName = "Unnamed";
   grades = new Grade[40];
   count = 0;
+  this->path = path;
+  capacity = 40;
+  loadFile();
 }
 
-GradeBook::~GradeBook()
-{
+GradeBook::~GradeBook() {
   std::cout << "Deleting grades..." << std::endl;
   delete[] grades;
   std::cout << "Done." << std::endl;
 }
 
-// getter of the count of students
-int GradeBook::getCount() const
-{
-  return count;
-}
+int GradeBook::getCount() const { return count; }
 
-// getter of the course name
-std::string GradeBook::getName() const
-{
-  return courseName;
-}
-
-// add a new grade
-// do not worry about the size limit
-void GradeBook::addGrade(const std::string &name, double grade)
-{
-  grades[count] = Grade(name, grade);
-  count++;
-}
-
-// search the grade by student's name
-// return -1 if not found
-int GradeBook::searchStudent(const std::string &name) const
-{
-  for (int i = 0; i < count; i++)
-  {
-    if (grades[i].getName() == name)
-    {
-      return i;
+int GradeBook::searchStudent(const std::string &name) const {
+  int returnMe = -1;
+  for (int i = 0; i < count; i++) {
+    if (grades[i].getName() == name) {
+      returnMe = i;
     }
   }
-  return -1;
+  return returnMe;
 }
 
-// print the student's info providing a valid index
-// assuming that the index is valid (get from the search)
-// ask the Grade object to print
-void GradeBook::printStudent(int studentIndex) const
-{
-  this->grades[studentIndex].print();
-}
-
-// print a summary of the course like:
-// GradeBook of course COP 3014
-// Name: John Smith | Grade: 90.0
-// Name: Laura Johnson | Grade: 83.0
-// Name: Josh Brown | Grade: 77.0
-
-// ask each Grade object to print itself
-void GradeBook::print() const
-{
-  std::cout << "GradeBook of course " << getName() << "\n";
-  for (int i = 0; i < count; i++)
-  {
-    grades[i].print();
+void GradeBook::loadFile() {
+  std::ifstream file(path);
+  if (file.is_open()) {
+    std::string line;
+    while (getline(file, line)) {
+      if (count == capacity) {
+        std::cerr << "Error: capacity exceeded." << std::endl;
+        break;
+      }
+      grades[count++] = Grade(line);
+    }
+    file.close();
+  } else {
+    std::cerr << "Error: could not open file " << path << std::endl;
   }
 }
 
-void GradeBook::removeStudent(const int index)
-{
-  for (int i = index; i < count; i++)
-  {
-    grades[i] = grades[i + 1];
+void GradeBook::updateGrade(int index, const std::string &name) {}
+
+void GradeBook::save(const std::string &path) const {
+  std::ofstream outfile(path);
+  if (outfile) {
+    for (int i = 0; i < getCount(); ++i) {
+      outfile << grades[i].infoLine() << std::endl;
+    }
+    outfile.close();
+    std::cout << "File saved successfully!" << std::endl;
+  } else {
+    std::cout << "Error: Unable to open file " << path << std::endl;
   }
-  count--;
-  Grade *temp = new Grade[count];
-  for (int i = 0; i < count; i++)
-  {
-    temp[i] = grades[i];
-  }
-  delete[] grades;
-  grades = new Grade[count];
-  for (int i = 0; i < count; i++)
-  {
-    grades[i] = temp[i];
-  }
-  delete[] temp;
 }
 
-void GradeBook::updateGrade(const int index, double grade)
-{
-  grades[index].setGrade(grade);
+void GradeBook::print() const {
+  std::cout << "Course name: " << courseName << std::endl;
+  for (int i = 0; i < count; i++) {
+    std::cout << grades[i].infoLine() << std::endl;
+  }
 }

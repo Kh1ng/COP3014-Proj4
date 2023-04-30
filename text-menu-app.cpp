@@ -4,63 +4,61 @@
 
 using namespace std;
 
-void TextMenuApp::run()
-{
+void TextMenuApp::run() {
   int userResponse;
   bool validInput;
   string searchName;
   double grade;
   string gradeName;
   int searchIndex;
+  string fileName;
 
-  do
-  {
-    cout << "1. Print all grades\n2. Remove a grade\n3. Update a grade\n4. Exit\n";
+  do {
+    cout << "1. Print all grades\n2. Update a grade\n3. Save to file\n4. "
+            "Exit\n";
     cin >> userResponse;
     validInput = ((userResponse <= 5) && (userResponse > 0)) ? true : false;
 
-    while (!validInput)
-    {
+    while (!validInput) {
       cout << "Please enter a valid selection" << endl;
       cin >> userResponse;
 
       validInput = ((userResponse <= 5) && (userResponse > 0)) ? true : false;
     }
-    switch (userResponse)
-    {
+
+    switch (userResponse) {
     case 1:
       cout << "Printing all grades" << endl;
       gradeBook.print();
       break;
+
     case 2:
-      cout << "Removing a grade..." << endl;
-      cout << "Enter the name of the student:" << endl;
+      cout << "Enter the name of the student whose grade you would like to "
+              "update: "
+           << endl;
       getline(cin >> ws, searchName);
       searchIndex = gradeBook.searchStudent(searchName);
-      while (searchIndex == -1)
-      {
-        cout << "Name not found! Please input an existing name" << endl;
+      while (searchIndex == -1) {
+        cout << "Student not found. Please enter a valid name: ";
         getline(cin >> ws, searchName);
         searchIndex = gradeBook.searchStudent(searchName);
       }
-      gradeBook.removeStudent(searchIndex);
-      break;
-    case 3:
-      cout << "Adding a new grade..." << endl;
-      cout << "Enter the name of the student: " << endl;
-      getline(cin >> ws, gradeName);
-      cout << "Enter the grade: " << endl;
+      cout << "Enter the new grade: ";
       cin >> grade;
-      while (grade < 0 || grade > 100)
-      {
-        cout << "Please enter a valid grade" << endl;
-        cin >> grade;
-      }
-      gradeBook.addGrade(gradeName, grade);
+      gradeBook.updateGrade(searchIndex, searchName);
+      cout << searchName << " has been updated" << endl;
       break;
+
+    case 3:
+      cout << "Please enter a file name: " << endl;
+      getline(cin >> ws, fileName);
+      gradeBook.save(fileName);
+      break;
+
     case 4:
       cout << "Exiting" << endl;
       break;
+
     default:
       cout << "Please enter a valid selection" << endl;
       break;

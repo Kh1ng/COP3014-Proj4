@@ -10,7 +10,7 @@ private:
   std::string path;
   Grade *grades;
   int capacity;
-  int count = 0;
+  int count;
 
 public:
   GradeBook();
