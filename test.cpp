@@ -1,8 +1,8 @@
 #include "grade.hpp"
 #include "gradebook.hpp"
 #include <cassert>
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
@@ -19,6 +19,7 @@ void testGrade() {
   Grade grade1("new name,90");
   assert(grade1.getName() == "new name");
   assert(isClose(grade1.getGrade(), 90));
+  cout << grade1.infoLine() << endl;
   assert(grade1.infoLine() == "Name: new name | Grade: 90.0");
   assert(isClose(grade1.getGrade(), 90));
 }

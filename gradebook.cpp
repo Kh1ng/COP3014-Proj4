@@ -2,6 +2,7 @@
 #include "grade.hpp"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 GradeBook::GradeBook() {
@@ -60,7 +61,35 @@ void GradeBook::loadFile() {
   }
 }
 
-void GradeBook::updateGrade(int index, const std::string &name) {}
+void GradeBook::updateGrade(int index, const std::string &infoLine) {
+  std::string name = "0";
+  double newGrade = 0;
+  std::string thing;
+  bool validDouble = false;
+
+  std::istringstream iss(infoLine);
+  getline(iss >> std::ws, name, ',');
+  iss >> thing;
+  iss.clear();
+
+  for (int i = 0; i < thing.length(); i++) {
+    if (isdigit(thing[i]) || thing[i] == '.') {
+      validDouble = true;
+    } else {
+      validDouble = false;
+      i = thing.length();
+    }
+  }
+
+  if (validDouble) {
+    newGrade = std::stod(thing);
+  }
+
+  std::cout << "thing : " << thing << " | newGrade " << newGrade << std::endl;
+
+  grades[index].setName(name);
+  grades[index].setGrade(newGrade);
+}
 
 void GradeBook::save(const std::string &path) const {
   std::ofstream outfile(path);

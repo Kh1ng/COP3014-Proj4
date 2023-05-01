@@ -6,24 +6,21 @@ using namespace std;
 
 void TextMenuApp::run() {
   int userResponse;
-  bool validInput;
   string searchName;
-  double grade;
   string gradeName;
   int searchIndex;
   string fileName;
+  string newInfo;
+  string userString;
 
   do {
     cout << "1. Print all grades\n2. Update a grade\n3. Save to file\n4. "
             "Exit\n";
-    cin >> userResponse;
-    validInput = ((userResponse <= 5) && (userResponse > 0)) ? true : false;
-
-    while (!validInput) {
-      cout << "Please enter a valid selection" << endl;
-      cin >> userResponse;
-
-      validInput = ((userResponse <= 5) && (userResponse > 0)) ? true : false;
+    getline(cin >> ws, userString);
+    if (isdigit(userString[0])) {
+      userResponse = stoi(userString);
+    } else {
+      userResponse = -1;
     }
 
     switch (userResponse) {
@@ -43,9 +40,10 @@ void TextMenuApp::run() {
         getline(cin >> ws, searchName);
         searchIndex = gradeBook.searchStudent(searchName);
       }
-      cout << "Enter the new grade: ";
-      cin >> grade;
-      gradeBook.updateGrade(searchIndex, searchName);
+      cout << "Please input the new information (format: student's name, "
+              "comma, grade): ";
+      getline(cin >> ws, newInfo);
+      gradeBook.updateGrade(searchIndex, newInfo);
       cout << searchName << " has been updated" << endl;
       break;
 
@@ -61,6 +59,7 @@ void TextMenuApp::run() {
 
     default:
       cout << "Please enter a valid selection" << endl;
+      cout << "\n";
       break;
     }
     cout << "\n";
